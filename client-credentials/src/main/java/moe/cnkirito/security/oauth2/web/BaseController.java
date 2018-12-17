@@ -6,11 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by xujingfeng on 2017/8/7.
- */
 @RestController
-public class TestEndpoints {
+public class BaseController {
 
     @GetMapping("/product/{id}")
     public String getProduct(@PathVariable String id) {

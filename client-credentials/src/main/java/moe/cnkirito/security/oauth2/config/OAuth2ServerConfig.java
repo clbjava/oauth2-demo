@@ -20,9 +20,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
-/**
- * Created by xujingfeng on 2017/8/7.
- */
+
 @Configuration
 public class OAuth2ServerConfig {
 
@@ -38,21 +36,17 @@ public class OAuth2ServerConfig {
         }
 
         @Override
-        public void configure(HttpSecurity http) throws Exception {
-            // @formatter:off
-            http
-                    // Since we want the protected resources to be accessible in the UI as well we need
-                    // session creation to be allowed (it's disabled by default in 2.0.6)
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                    .and()
-//                    .requestMatchers().anyRequest()
-                    .and()
-                    .anonymous()
+        public void configure(HttpSecurity httpSecurity) throws Exception {
+            httpSecurity.sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and().
+                    anonymous()
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/product/**").access("#oauth2.hasScope('select') and hasPermission('delete')")
-                    .antMatchers("/order/**").authenticated();//配置order访问控制，必须认证过后才可以访问
-            // @formatter:on
+                    .antMatchers("/product/**")
+                    .access("#oauth2.hasScope('select') and hasPermission('delete')")
+                    .antMatchers("/order/**")
+                    .authenticated();//配置order访问控制，必须认证过后才可以访问
         }
     }
 
@@ -63,8 +57,10 @@ public class OAuth2ServerConfig {
 
         @Autowired
         AuthenticationManager authenticationManager;
-        @Autowired
-        RedisConnectionFactory redisConnectionFactory;
+
+ /*       @Autowired
+        RedisConnectionFactory redisConnectionFactory;*/
+
         @Autowired
         UserDetailsService userDetailsService;
 
@@ -82,13 +78,13 @@ public class OAuth2ServerConfig {
                     .authorizedGrantTypes("password", "refresh_token")
                     .scopes("select")
                     .authorities("oauth2")
-                    .secret("123456");
+                    .secret("123456").accessTokenValiditySeconds(30);
         }
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints
-                    .tokenStore(new RedisTokenStore(redisConnectionFactory))
+                    //.tokenStore(new RedisTokenStore(redisConnectionFactory))
                     .tokenStore(new InMemoryTokenStore())
                     .authenticationManager(authenticationManager)
                     .userDetailsService(userDetailsService)

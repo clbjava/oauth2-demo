@@ -16,15 +16,16 @@ import java.util.List;
 public class QQRestfulApiProviderController {
 
     @RequestMapping("/info/{qq}")
-    public QQAccount info(@PathVariable("qq") String qq){
+    public QQAccount info(@PathVariable("qq") String qq) {
+
         return InMemoryQQDatabase.database.get(qq);
     }
 
     @RequestMapping("fans/{qq}")
-    public List<QQAccount> fans(@PathVariable("qq") String qq){
-        return InMemoryQQDatabase.database.get(qq).getFans();
+    public List<QQAccount> fans(@PathVariable("qq") String qq) {
+         return null;
+        //return InMemoryQQDatabase.database.get(qq).getFans();
     }
-
 
 
 }
